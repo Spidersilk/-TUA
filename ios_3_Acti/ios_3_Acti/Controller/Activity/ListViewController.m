@@ -26,6 +26,8 @@
 @property (strong, nonatomic) UIImageView *zoomIV;
 @property (strong, nonatomic) UIActivityIndicatorView *aIV;//菊花膜
 - (IBAction)searchAction:(UIBarButtonItem *)sender;
+- (IBAction)switchAction:(UIBarButtonItem *)sender;
+
 
 
 @end
@@ -527,5 +529,11 @@
     [self presentViewController:nc animated:YES completion:nil];
     //push跳转
     //[self.navigationController pushViewController:nc animated:YES];
+}
+
+- (IBAction)switchAction:(UIBarButtonItem *)sender {
+}
+
+- (IBAction)cityAction:(UIButton *)sender forEvent:(UIEvent *)event {
 }
 @end

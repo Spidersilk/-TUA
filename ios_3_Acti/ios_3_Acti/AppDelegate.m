@@ -7,16 +7,35 @@
 //
 
 #import "AppDelegate.h"
+#import <ECSlidingViewController/ECSlidingViewController.h>//门框结构
 
 @interface AppDelegate ()
+//初始化一个实例。获得门框
+@property (strong, nonatomic) ECSlidingViewController *slidingVC;
 
 @end
 
 @implementation AppDelegate
 
-
+//整个app第一个会执行的逻辑方法
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
+    //初始化窗口（不用故事版设置箭头的时候，系统不会默认设置窗口，需手动设置）
+    _window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    UINavigationController *navi = [Utilities getStoryboardInstance:@"Main" byIdentity:@"HomeNavi"];
+    //将窗口可视化
+    [_window makeKeyAndVisible];
+    //创建门框(初始化的同时顺便设置好门框最外层的那扇门。也就是用户首先会看到的正中间的页面)(1.故事版名字2.视图控制器的名字)
+    _slidingVC = [[ECSlidingViewController alloc] initWithTopViewController:navi];
+    //放好左边那扇门(1.故事版名字2.视图控制器的名字)
+    _slidingVC.underLeftViewController = [Utilities getStoryboardInstance:@"Member" byIdentity:@"Left"];
+    //设置手势（表示让中间的门能够对拖拽与触摸响应）ECSlidingViewControllerAnchoredGestureTapping(触摸),ECSlidingViewControllerAnchoredGesturePanning(拖拽)
+    _slidingVC.topViewAnchoredGesture = ECSlidingViewControllerAnchoredGestureTapping | ECSlidingViewControllerAnchoredGesturePanning;
+    //把上面配置好的手势添加到中间那扇门
+    [navi.view addGestureRecognizer:_slidingVC.panGesture];
+    //设置APP入口
+    _window.rootViewController = _slidingVC;
     return YES;
 }
 
