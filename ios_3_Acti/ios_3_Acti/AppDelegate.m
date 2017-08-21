@@ -51,7 +51,7 @@
 }
 //当收到通知后要执行的方法
 - (void)leftSwitchAction:(NSNotification*)note{
-    NSLog(@"策划");
+    NSLog(@"侧滑");
     //当合上的状态下打开，当打开的状态下合上
     if (_slidingVC.currentTopViewPosition == ECSlidingViewControllerTopViewPositionCentered) {
         //合上的状态下打开

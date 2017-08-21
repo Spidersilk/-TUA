@@ -33,6 +33,7 @@
 		8456A55A1F47EBEB0043CD63 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8456A5591F47EBEB0043CD63 /* CoreTelephony.framework */; };
 		8456A55C1F47EC1D0043CD63 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8456A55B1F47EC1D0043CD63 /* CoreMotion.framework */; };
 		8456A55E1F47EC540043CD63 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8456A55D1F47EC540043CD63 /* libz.tbd */; };
+		84B27C4E1F4AC28C00800D9C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 84B27C501F4AC28C00800D9C /* Localizable.strings */; };
 		84E78D711F48031C002428D4 /* Member.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84E78D6F1F48031C002428D4 /* Member.storyboard */; };
 		84E78D741F480350002428D4 /* Issue.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84E78D721F480350002428D4 /* Issue.storyboard */; };
 		84E78D7F1F48056F002428D4 /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E78D771F48056F002428D4 /* DetailViewController.m */; };
@@ -126,6 +127,7 @@
 		8456A5591F47EBEB0043CD63 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		8456A55B1F47EC1D0043CD63 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		8456A55D1F47EC540043CD63 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		84B27C4F1F4AC28C00800D9C /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		84E78D701F48031C002428D4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = ios_3_Acti/Base.lproj/Member.storyboard; sourceTree = SOURCE_ROOT; };
 		84E78D731F480350002428D4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = ios_3_Acti/Base.lproj/Issue.storyboard; sourceTree = SOURCE_ROOT; };
 		84E78D761F48056F002428D4 /* DetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
@@ -374,6 +376,7 @@
 				B22C7A3A1F25D1CF00F37C1D /* Info.plist */,
 				8456A5571F47EB1B0043CD63 /* Cities.plist */,
 				B22C7A6B1F25DF7200F37C1D /* PrefixHeader.pch */,
+				84B27C501F4AC28C00800D9C /* Localizable.strings */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -593,6 +596,7 @@
 				84E78D711F48031C002428D4 /* Member.storyboard in Resources */,
 				8456A5581F47EB1B0043CD63 /* Cities.plist in Resources */,
 				B22C7A311F25D1CF00F37C1D /* Main.storyboard in Resources */,
+				84B27C4E1F4AC28C00800D9C /* Localizable.strings in Resources */,
 				84E78D741F480350002428D4 /* Issue.storyboard in Resources */,
 				B275444F1F272F0C003623DC /* Detail.storyboard in Resources */,
 			);
@@ -737,6 +741,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		84B27C501F4AC28C00800D9C /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				84B27C4F1F4AC28C00800D9C /* Base */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		84E78D6F1F48031C002428D4 /* Member.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
