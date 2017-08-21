@@ -9,7 +9,7 @@
 #import "AppDelegate.h"
 #import <ECSlidingViewController/ECSlidingViewController.h>//门框结构
 
-@interface AppDelegate ()
+@interface AppDelegate ()<ECSlidingViewControllerDelegate>
 //初始化一个实例。获得门框
 @property (strong, nonatomic) ECSlidingViewController *slidingVC;
 
@@ -28,15 +28,39 @@
     [_window makeKeyAndVisible];
     //创建门框(初始化的同时顺便设置好门框最外层的那扇门。也就是用户首先会看到的正中间的页面)(1.故事版名字2.视图控制器的名字)
     _slidingVC = [[ECSlidingViewController alloc] initWithTopViewController:navi];
+    //签协议
+    //_slidingVC.delegate = self;
     //放好左边那扇门(1.故事版名字2.视图控制器的名字)
     _slidingVC.underLeftViewController = [Utilities getStoryboardInstance:@"Member" byIdentity:@"Left"];
     //设置手势（表示让中间的门能够对拖拽与触摸响应）ECSlidingViewControllerAnchoredGestureTapping(触摸),ECSlidingViewControllerAnchoredGesturePanning(拖拽)
     _slidingVC.topViewAnchoredGesture = ECSlidingViewControllerAnchoredGestureTapping | ECSlidingViewControllerAnchoredGesturePanning;
     //把上面配置好的手势添加到中间那扇门
     [navi.view addGestureRecognizer:_slidingVC.panGesture];
+    //设置侧滑动画的执行时间
+    _slidingVC.defaultTransitionDuration = 0.25;
+    //设置滑动的幅度（中间那扇门打开的宽度）(RevealAmount后面那扇门能看到多少)
+    _slidingVC.anchorRightPeekAmount = UI_SCREEN_W / 6;
+    
+    
     //设置APP入口
     _window.rootViewController = _slidingVC;
+    
+    //注册策划按钮被
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(leftSwitchAction:) name:@"LeftSwitch" object:nil];
     return YES;
+}
+//当收到通知后要执行的方法
+- (void)leftSwitchAction:(NSNotification*)note{
+    NSLog(@"策划");
+    //当合上的状态下打开，当打开的状态下合上
+    if (_slidingVC.currentTopViewPosition == ECSlidingViewControllerTopViewPositionCentered) {
+        //合上的状态下打开
+        [_slidingVC anchorTopViewToRightAnimated:YES];
+    }else{
+        //打开的状态下合上
+        [_slidingVC resetTopViewAnimated:YES];
+    
+    }
 }
 
 

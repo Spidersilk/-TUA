@@ -58,9 +58,9 @@
     
 //    ActivityModel *activity = [[ActivityModel alloc] init];
 //    activity.name = @"活动";
-    
-    
+ 
 }
+
 
 //每次将要来到这个页面的时候
 - (void)viewWillAppear:(BOOL)animated{
@@ -532,6 +532,7 @@
 }
 
 - (IBAction)switchAction:(UIBarButtonItem *)sender {
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"LeftSwitch" object:nil];
 }
 
 - (IBAction)cityAction:(UIButton *)sender forEvent:(UIEvent *)event {
