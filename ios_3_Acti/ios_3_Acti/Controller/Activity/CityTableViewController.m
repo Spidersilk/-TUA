@@ -7,12 +7,20 @@
 //
 
 #import "CityTableViewController.h"
+#import <CoreLocation/CoreLocation.h>//使用该框架才可以使用定位功能
 
-@interface CityTableViewController ()
+@interface CityTableViewController ()<CLLocationManagerDelegate> {
+    BOOL firstVisit;
+}
 
 @property (strong, nonatomic) NSDictionary *cities;
 @property (strong, nonatomic) NSArray *keys;
 - (IBAction)cityAction:(UIButton *)sender forEvent:(UIEvent *)event;
+@property (weak, nonatomic) IBOutlet UIButton *cityBtn;
+@property (strong, nonatomic) CLLocationManager *locMgr;
+
+@property (strong, nonatomic) CLLocation *location;
+
 
 @end
 
@@ -27,7 +35,14 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     [self naviConfig];
+    [self uilayout];
     [self dataInitialize];
+}
+//每次将要离开这个页面的时候
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    //关掉开关
+    [_locMgr stopUpdatingLocation];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -52,6 +67,34 @@
     UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(backAction)];
     self.navigationItem.leftBarButtonItem = left;
 }
+
+- (void) uilayout {
+    if (![[[StorageMgr singletonStorageMgr] objectForKey:@"LocCity"] isKindOfClass:[NSNull class]]) {
+        if ([[StorageMgr singletonStorageMgr] objectForKey:@"LocCity"] != nil) {
+            //已获取定位，将定位到的城市显示在按钮上
+            [_cityBtn setTitle:[[StorageMgr singletonStorageMgr] objectForKey:@"LocCity"] forState:UIControlStateNormal];
+            _cityBtn.enabled = YES;
+            return;
+        }
+    }
+    //当还没获取定位的情况下，去执行定位功能
+    [self locationStart];
+    
+    
+}
+- (void) locationStart {
+    //这个方法专门处理定位的基本设置
+    _locMgr = [CLLocationManager new];
+    //签协议
+    _locMgr.delegate = self;
+    //定位到的设备位移多少距离进行一次识别
+    _locMgr.distanceFilter = kCLHeadingFilterNone;
+    //设置把地球分割成边长多少精度的方块
+    _locMgr.desiredAccuracy = kCLLocationAccuracyBest;
+    //打开定位服务的开关（开始定位）
+    [_locMgr startUpdatingLocation];
+}
+
 //用model的方式返回上一页
 - (void)backAction{
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -59,6 +102,7 @@
 }
 
 - (void) dataInitialize {
+    firstVisit = YES;
     //创建文件管理器
     NSFileManager *fileMgr = [NSFileManager defaultManager];
     //获取要获取的文件路径
@@ -121,9 +165,16 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 40.f;
 }
-//取消选择
+//按住细胞以后（取消选择）
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    //获取当前正在渲染的组的名称
+    NSString *key = _keys[indexPath.section];
+    //根据组的名称作为键，来查询到对应的值（这个值就是这一组城市对应城市数组）
+    NSArray *sectionCities = _cities[key];
+    NSDictionary *city = sectionCities[indexPath.row];
+    [[NSNotificationCenter defaultCenter] performSelectorOnMainThread:@selector(postNotification:) withObject:[NSNotification notificationWithName:@"ResetHome" object:city[@"name"]] waitUntilDone:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 //设置右侧快捷键的栏
 - (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView {
@@ -174,5 +225,83 @@
 */
 
 - (IBAction)cityAction:(UIButton *)sender forEvent:(UIEvent *)event {
+    NSNotificationCenter *noteCenter = [NSNotificationCenter defaultCenter];
+    //A
+    //[noteCenter postNotificationName:@"ResetHome" object:nil];
+    //B
+    NSNotification *note = [NSNotification notificationWithName:@"ResetHome" object:[[StorageMgr singletonStorageMgr] objectForKey:@"LocCity"]];
+    //[noteCenter postNotification:note];
+    //结合线程的通知，表示先让通知接收者完成它收到通知要做的事以后再执行别的任务
+    [noteCenter performSelectorOnMainThread:@selector(postNotification:) withObject:note waitUntilDone:YES];
+    //返回上一页
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
 }
+//定位失败时
+- (void)locationManager:(CLLocationManager *)manager
+       didFailWithError:(NSError *)error {
+    if (error) {
+        switch (error.code) {
+            case kCLErrorNetwork:
+                [Utilities popUpAlertViewWithMsg:NSLocalizedString(@"NetworkError", nil) andTitle:nil onView:self];
+                break;
+            case kCLErrorDenied:
+                [Utilities popUpAlertViewWithMsg:NSLocalizedString(@"GPSDisabled", nil) andTitle:nil onView:self];
+                break;
+            case kCLErrorLocationUnknown:
+                [Utilities popUpAlertViewWithMsg:NSLocalizedString(@"LocationUnkonw", nil) andTitle:nil onView:self];
+                break;
+            default:
+                [Utilities popUpAlertViewWithMsg:NSLocalizedString(@"SystemError", nil) andTitle:nil onView:self];
+                break;
+        }
+    }
+}
+//定位成功时
+- (void)locationManager:(CLLocationManager *)manager
+    didUpdateToLocation:(CLLocation *)newLocation
+           fromLocation:(CLLocation *)oldLocation{
+    //NSLog(@"纬度:%f",newLocation.coordinate.latitude);
+    //NSLog(@"经度:%f",newLocation.coordinate.longitude);
+    _location = newLocation;
+    //用flag思想判断是否可以去根据定位拿到城市
+    if (firstVisit) {
+        firstVisit = !firstVisit;
+        //根据定位拿到城市
+        [self getRegeoViaCoordinate];
+    }
+    
+}
+- (void) getRegeoViaCoordinate {
+    //duration表示从now开始过3个SEC
+    dispatch_time_t duration = dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC);
+    //用duration这个设置好的策略去做某些事
+    dispatch_after(duration, dispatch_get_main_queue(), ^{
+        //正式做事情
+        CLGeocoder *geo = [CLGeocoder new];
+        //反向地理编码
+        [geo reverseGeocodeLocation:_location completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
+            if (!error) {
+                CLPlacemark *first = placemarks.firstObject;
+                NSDictionary *locDict = first.addressDictionary;
+                //NSLog(@"locDict:%@",locDict);
+                NSString *cityStr = locDict[@"City"];
+                cityStr = [cityStr substringToIndex:(cityStr.length - 1)];
+                [[StorageMgr singletonStorageMgr] removeObjectForKey:@"LocCity"];
+                //将定位到的城市存进单例化全局变量
+                [[StorageMgr singletonStorageMgr] addKey:@"LocCity" andValue:cityStr];
+                //修改城市按钮标题
+                [_cityBtn setTitle:cityStr forState:UIControlStateNormal];
+                _cityBtn.enabled = YES;
+                
+            }
+        }];
+        //关掉开关
+        [_locMgr stopUpdatingLocation];
+    });
+}
+
+
+
+
 @end

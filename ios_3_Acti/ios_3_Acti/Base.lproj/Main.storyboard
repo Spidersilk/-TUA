@@ -180,7 +180,7 @@
                                     <color key="textColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                     <nil key="highlightedColor"/>
                                 </label>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VLh-Jg-Fne">
+                                <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VLh-Jg-Fne">
                                     <rect key="frame" x="255" y="10" width="90" height="30"/>
                                     <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
                                     <state key="normal" title="正在获取中...">
@@ -225,6 +225,9 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="选择城市" id="Eyy-lQ-IZ9"/>
+                    <connections>
+                        <outlet property="cityBtn" destination="VLh-Jg-Fne" id="zLt-E2-K5q"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5bB-XH-4Qq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

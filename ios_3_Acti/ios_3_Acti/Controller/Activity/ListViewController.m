@@ -54,6 +54,7 @@
     [self locationConfig];
     [self dataInitialize];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkCityState:) name:@"ResetHome" object:nil];
     
     //[self networkRequest];
     //过2秒再执行networkRequest方法
@@ -645,6 +646,9 @@
                 NSLog(@"locDict:%@",locDict);
                 NSString *cityStr = locDict[@"City"];
                 cityStr = [cityStr substringToIndex:(cityStr.length - 1)];
+                [[StorageMgr singletonStorageMgr] removeObjectForKey:@"LocCity"];
+                //将定位到的城市存进单例化全局变量
+                [[StorageMgr singletonStorageMgr] addKey:@"LocCity" andValue:cityStr];
                 if (![cityStr isEqualToString:_ctiyButton.titleLabel.text]) {
                     //当定位到的城市和当前选择的城市不一样的时候，弹窗询问是否要切换城市
                     UIAlertController *alertView = [UIAlertController alertControllerWithTitle:@"提示" message:[NSString stringWithFormat:@"当前定位到的城市为%@,是否切换",cityStr] preferredStyle:UIAlertControllerStyleAlert];
@@ -671,5 +675,20 @@
         [_locMgr stopUpdatingLocation];
     });
 }
+- (void) checkCityState:(NSNotification *)note {
+    NSString *cityStr = note.object;
+    if (![cityStr isEqualToString:_ctiyButton.titleLabel.text]) {
+        //修改城市按钮标题
+        [_ctiyButton setTitle:cityStr forState:UIControlStateNormal];
+        //修改用户选择的城市
+        [Utilities removeUserDefaults:@"UserCity"];
+        [Utilities setUserDefaults:@"UserCity" content:cityStr];
+        //重新进行网络请求
+        [self networkRequest];
+    }
+    
+}
+
+
 
 @end
