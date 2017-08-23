@@ -30,7 +30,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="312.5" height="170"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Avatar" translatesAutoresizingMaskIntoConstraints="NO" id="qGq-bu-qbg">
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Avatar" translatesAutoresizingMaskIntoConstraints="NO" id="qGq-bu-qbg">
                                             <rect key="frame" x="45" y="60" width="80" height="80"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" secondItem="qGq-bu-qbg" secondAttribute="height" multiplier="1:1" id="nsD-wO-NNb"/>
@@ -154,7 +154,7 @@
                                         <rect key="frame" x="0.0" y="242" width="312" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="eff-O7-l3F" id="2bB-UH-Mla">
-                                            <rect key="frame" x="0.0" y="0.0" width="312" height="44"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="312.5" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
