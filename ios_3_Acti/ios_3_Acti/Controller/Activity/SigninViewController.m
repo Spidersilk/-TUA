@@ -7,7 +7,7 @@
 //
 
 #import "SigninViewController.h"
-
+#import "UserModel.h"
 @interface SigninViewController ()<UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UITextField *userTextField;
 @property (weak, nonatomic) IBOutlet UITextField *pwdTextField;
@@ -23,6 +23,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self naviConfig];
+    [self uiLayout];
     // Do any additional setup after loading the view.
 }
 
@@ -63,7 +64,14 @@
     [self dismissViewControllerAnimated:YES completion:nil];
     //[self.navigationController popViewControllerAnimated:YES];//用push返回上一页
 }
-
+- (void)uiLayout{
+    if(![[Utilities getUserDefaults:@"Username"] isKindOfClass:[NSNull class]]){
+        if([Utilities getUserDefaults:@"Username"] != nil){
+            //将它显示在用户名输入框中
+            _userTextField.text = [Utilities getUserDefaults:@"Username"];
+        }
+    }
+}
 - (IBAction)signAction:(UIButton *)sender forEvent:(UIEvent *)event {
     if(_userTextField.text.length == 0){
         [Utilities popUpAlertViewWithMsg:@"请输入您的手机号" andTitle:nil onView:self];
@@ -85,7 +93,7 @@
     }
     //无输入异常的情况下，开始正式执行登录接口
     [self request];
-    [self signRequest];
+    
 }
 #pragma mark - 网络请求
 //登录注册相关
@@ -98,7 +106,15 @@
         //成功以后要做的事情
         //NSLog(@"responseObject = %@",responseObject);
         if ([responseObject[@"resultFlag"] integerValue] == 8001) {
-            
+            NSDictionary *result = responseObject[@"result"];
+            NSString *exponent = result[@"exponent"];
+            NSString *modulus = result[@"modulus"];
+            //对内容进行MD5加密
+            NSString *md5Str = [_pwdTextField.text getMD5_32BitString];
+            //用模数与指数对MD5加密过后的密码进行加密
+            NSString *rsaStr = [NSString encryptWithPublicKeyFromModulusAndExponent:md5Str.UTF8String modulus:modulus exponent:exponent];
+            //加密完成执行接口
+            [self signWithEncryptPwd:rsaStr];
         }else{
             [_avi stopAnimating];
             NSString *errorMsg = [ErrorHandler getProperErrorString:[responseObject[@"resultFlag"] integerValue]];
@@ -110,27 +126,35 @@
             [Utilities popUpAlertViewWithMsg:@"请保持网络连接畅通" andTitle:nil onView:self];
     }];
 }
-//登录网络请求
-- (void)signRequest{
+
+- (void)signWithEncryptPwd:(NSString *)encryptPwd {
     NSString *str = [Utilities uniqueVendor];
-    _avi = [Utilities getCoverOnView:self.view];
-    NSDictionary *prarmeter = @{@"userName" : _userTextField.text, @"password" : _pwdTextField.text, @"deviceType" : @7001, @"deviceId" : str};
-    //开始请求
-    [RequestAPI requestURL:@"/login" withParameters:prarmeter andHeader:nil byMethod:kPost andSerializer:kJson success:^(id responseObject) {
+    [RequestAPI requestURL:@"/login" withParameters:@{@"userName" : _userTextField.text, @"password" : encryptPwd, @"deviceType" : @7001, @"deviceId" : str} andHeader:nil byMethod:kPost andSerializer:kJson success:^(id responseObject) {
         [_avi stopAnimating];
-    //成功以后要做的事情
-    NSLog(@"responseObject = %@",responseObject);
-    if ([responseObject[@"resultFlag"] integerValue] == 8001) {
-        
-    }else{
-        
-    }
-} failure:^(NSInteger statusCode, NSError *error) {
-    //失败以后要做的事情
-    //NSLog(@"statusCode = %ld",(long)statusCode);
-    
-    [Utilities popUpAlertViewWithMsg:@"请保持网络连接畅通" andTitle:nil onView:self];
-}];
+        NSLog(@"responseObject = %@",responseObject);
+        if ([responseObject[@"resultFlag"] integerValue] == 8001) {
+            NSDictionary *result = responseObject[@"result"];
+            UserModel *usermodel = [[UserModel alloc]initWhitDictionary:result];
+            //将登录获取到的用户信息打包存储到单例化全局变量中
+            [[StorageMgr singletonStorageMgr]addKey:@"MemberInfo" andValue:usermodel];
+            //单独将用户的ID也存储进单例化全局变量来作为用户是否已经登录的判断依据，同时也方便其它所有页面更快捷地使用ID这个参数
+             [[StorageMgr singletonStorageMgr]addKey:@"MemberId" andValue:usermodel.memberId];
+            //让根视图结束编辑状态达到收起键盘的目的
+            [self.view endEditing:YES];
+            //情空密码输入框里的内容
+            _pwdTextField.text = @"";
+            //记忆用户名
+            [Utilities setUserDefaults:@"Username" content:_userTextField.text];
+            //用model的方式返回上一页
+            [self dismissViewControllerAnimated:YES completion:nil];
+                }else{
+                    NSString *errorMsg = [ErrorHandler getProperErrorString:[responseObject[@"resultFlag"] integerValue]];
+                    [Utilities popUpAlertViewWithMsg:errorMsg andTitle:nil onView:self];
+                }
+    } failure:^(NSInteger statusCode, NSError *error) {
+        [_avi stopAnimating];
+        [Utilities popUpAlertViewWithMsg:@"请保持网络连接畅通" andTitle:nil onView:self];
+    }];
 }
 #pragma mark - 收起键盘
 //按键盘上的Return键收起键盘
@@ -140,6 +164,7 @@
 }
 //按键盘以外的任意部位收起键盘
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    //让根视图结束编辑状态达到收起键盘的目的
     [self.view endEditing:YES];
 }
 

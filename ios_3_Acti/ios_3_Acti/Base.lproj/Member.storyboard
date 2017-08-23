@@ -180,6 +180,7 @@
                         <outlet property="loginBtn" destination="9GR-gd-v7D" id="VDI-eT-92O"/>
                         <outlet property="tableView" destination="Bvx-SH-jqa" id="gMg-lu-ZWR"/>
                         <outlet property="usernameLabel" destination="Ffl-2O-Pef" id="FVN-4E-0Nc"/>
+                        <segue destination="Gge-AW-JY8" kind="presentation" identifier="Let2MyAct" id="w02-r8-Mrv"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="a1t-vM-PR6" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -205,7 +206,7 @@
                                 </constraints>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
+                                <textInputTraits key="textInputTraits" keyboardType="phonePad"/>
                                 <connections>
                                     <outlet property="delegate" destination="oAK-kP-gdj" id="cZ2-2z-clQ"/>
                                 </connections>
@@ -217,7 +218,7 @@
                                 </constraints>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
+                                <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
                                 <connections>
                                     <outlet property="delegate" destination="oAK-kP-gdj" id="ze2-Yk-Pou"/>
                                 </connections>

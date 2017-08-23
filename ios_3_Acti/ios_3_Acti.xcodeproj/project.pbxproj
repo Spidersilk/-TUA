@@ -33,6 +33,7 @@
 		8456A55A1F47EBEB0043CD63 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8456A5591F47EBEB0043CD63 /* CoreTelephony.framework */; };
 		8456A55C1F47EC1D0043CD63 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8456A55B1F47EC1D0043CD63 /* CoreMotion.framework */; };
 		8456A55E1F47EC540043CD63 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8456A55D1F47EC540043CD63 /* libz.tbd */; };
+		849669741F4D4FC30018DA16 /* UserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 849669731F4D4FC30018DA16 /* UserModel.m */; };
 		84B27C4E1F4AC28C00800D9C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 84B27C501F4AC28C00800D9C /* Localizable.strings */; };
 		84E78D711F48031C002428D4 /* Member.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84E78D6F1F48031C002428D4 /* Member.storyboard */; };
 		84E78D741F480350002428D4 /* Issue.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84E78D721F480350002428D4 /* Issue.storyboard */; };
@@ -127,6 +128,8 @@
 		8456A5591F47EBEB0043CD63 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		8456A55B1F47EC1D0043CD63 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		8456A55D1F47EC540043CD63 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		849669721F4D4FC30018DA16 /* UserModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserModel.h; sourceTree = "<group>"; };
+		849669731F4D4FC30018DA16 /* UserModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserModel.m; sourceTree = "<group>"; };
 		84B27C4F1F4AC28C00800D9C /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		84E78D701F48031C002428D4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = ios_3_Acti/Base.lproj/Member.storyboard; sourceTree = SOURCE_ROOT; };
 		84E78D731F480350002428D4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = ios_3_Acti/Base.lproj/Issue.storyboard; sourceTree = SOURCE_ROOT; };
@@ -248,6 +251,15 @@
 				8456A5451F47E9BA0043CD63 /* RSADataVerifier.m */,
 			);
 			path = AliUtil;
+			sourceTree = "<group>";
+		};
+		849669711F4D4F720018DA16 /* UserModel */ = {
+			isa = PBXGroup;
+			children = (
+				849669721F4D4FC30018DA16 /* UserModel.h */,
+				849669731F4D4FC30018DA16 /* UserModel.m */,
+			);
+			name = UserModel;
 			sourceTree = "<group>";
 		};
 		84E78D751F48056F002428D4 /* Activity */ = {
@@ -428,6 +440,7 @@
 		B22C7A5F1F25D4C800F37C1D /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				849669711F4D4F720018DA16 /* UserModel */,
 				B22C7A651F25D87200F37C1D /* ios_3_Acti.xcdatamodeld */,
 				8456A52D1F47E8FC0043CD63 /* Order.h */,
 				8456A52E1F47E8FC0043CD63 /* Order.m */,
@@ -466,12 +479,12 @@
 				B20A160E1F2EF77E00890F74 /* AppAPIClient.m */,
 				B20A160F1F2EF77E00890F74 /* ErrorHandler.h */,
 				B20A16101F2EF77E00890F74 /* ErrorHandler.m */,
-				B20A16111F2EF77E00890F74 /* NSData+Base64.h */,
-				B20A16121F2EF77E00890F74 /* NSData+Base64.m */,
 				B20A16131F2EF77E00890F74 /* NSDate+Utility.h */,
 				B20A16141F2EF77E00890F74 /* NSDate+Utility.m */,
 				B20A16151F2EF77E00890F74 /* NSDateFormatter+Category.h */,
 				B20A16161F2EF77E00890F74 /* NSDateFormatter+Category.m */,
+				B20A16111F2EF77E00890F74 /* NSData+Base64.h */,
+				B20A16121F2EF77E00890F74 /* NSData+Base64.m */,
 				B20A16171F2EF77E00890F74 /* NSString+Crypt.h */,
 				B20A16181F2EF77E00890F74 /* NSString+Crypt.m */,
 				B20A161B1F2EF77E00890F74 /* StorageMgr.h */,
@@ -697,6 +710,7 @@
 				8456A54A1F47E9BA0043CD63 /* MD5DataSigner.m in Sources */,
 				B20A16241F2EF77E00890F74 /* NSString+Crypt.m in Sources */,
 				B20A16271F2EF77E00890F74 /* Utilities.m in Sources */,
+				849669741F4D4FC30018DA16 /* UserModel.m in Sources */,
 				844DFFD21F48275D008E2010 /* SignUpViewController.m in Sources */,
 				B22C7A281F25D1CF00F37C1D /* main.m in Sources */,
 				844DFFC91F482667008E2010 /* LeftViewController.m in Sources */,
