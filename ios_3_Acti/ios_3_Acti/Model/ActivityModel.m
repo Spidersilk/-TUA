@@ -21,6 +21,7 @@
     
     self = [super init];//self调用者本身
     if (self){
+        _activityId = [Utilities nullAndNilCheck:@"id" replaceBy:@"0"];
     _imgUrl = [dict[@"imgUrl"] isKindOfClass:[NSNull class]] ? @"":dict[@"imgUrl"];
     self.name = [dict[@"name"] isKindOfClass:[NSNull class]] ? @"活动" :dict[@"name"];
     self.content = [dict[@"content"] isKindOfClass:[NSNull class]] ? @"暂无内容" :dict[@"content"];

@@ -9,6 +9,24 @@
 #import "DetailViewController.h"
 
 @interface DetailViewController ()
+@property (weak, nonatomic) IBOutlet UIImageView *activityImageView;
+@property (weak, nonatomic) IBOutlet UILabel *applyFeeLabel;
+- (IBAction)applyAction:(UIButton *)sender forEvent:(UIEvent *)event;
+@property (weak, nonatomic) IBOutlet UIButton *applyBtn;
+@property (weak, nonatomic) IBOutlet UILabel *applyStateLbl;
+@property (weak, nonatomic) IBOutlet UILabel *attentdenceLbl;
+@property (weak, nonatomic) IBOutlet UILabel *typeLbl;
+@property (weak, nonatomic) IBOutlet UILabel *issuerLbl;
+@property (weak, nonatomic) IBOutlet UILabel *timeLbl;
+@property (weak, nonatomic) IBOutlet UILabel *addressLbl;
+@property (weak, nonatomic) IBOutlet UILabel *applyDueLbl;
+@property (weak, nonatomic) IBOutlet UIButton *phoneBtn;
+- (IBAction)callAction:(UIButton *)sender forEvent:(UIEvent *)event;
+@property (weak, nonatomic) IBOutlet UIView *applyStartView;
+@property (weak, nonatomic) IBOutlet UIView *applyDueView;
+@property (weak, nonatomic) IBOutlet UIView *applyIngView;
+@property (weak, nonatomic) IBOutlet UIView *applyEndView;
+@property (weak, nonatomic) IBOutlet UILabel *contentLbl;
 
 @end
 
@@ -19,7 +37,9 @@
     // Do any additional setup after loading the view.
     [self naviConfig];
 }
-
+- (void) viewWillAppear:(BOOL)animated{
+    [super viewWillAppear: animated];
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -51,5 +71,30 @@
     //设置是否需要毛玻璃效果
     self.navigationController.navigationBar.translucent = YES;
 }
-
+- (void)networkRequest{
+    UIActivityIndicatorView *avi = [Utilities getCoverOnView:self.view];
+    NSString * request =[NSString stringWithFormat:@"/event/%@",_activity.activityId];
+    NSMutableDictionary *parmeters = [NSMutableDictionary new];
+    if([Utilities loginCheck]){
+        [parmeters setObject:[[StorageMgr singletonStorageMgr] objectForKey:@"MemberId"] forKey:@"memberId"];
+    }
+    [RequestAPI requestURL:request withParameters:parmeters andHeader:nil byMethod:kGet andSerializer:kForm success:^(id responseObject) {
+        NSLog(@"responseObject = %@",responseObject);
+        [avi stopAnimating];
+        if([responseObject[@"resultFlag"] integerValue] == 8001){
+            
+        }else{
+            [avi stopAnimating];
+            NSString *errorMsg = [ErrorHandler getProperErrorString:[responseObject[@"resultFlag"] integerValue]];
+            [Utilities popUpAlertViewWithMsg:errorMsg andTitle:nil onView:self];
+        }
+    } failure:^(NSInteger statusCode, NSError *error) {
+        [avi stopAnimating];
+        [Utilities popUpAlertViewWithMsg:@"请保持网络连接畅通" andTitle:nil onView:self];
+    }];
+}
+- (IBAction)applyAction:(UIButton *)sender forEvent:(UIEvent *)event {
+}
+- (IBAction)callAction:(UIButton *)sender forEvent:(UIEvent *)event {
+}
 @end

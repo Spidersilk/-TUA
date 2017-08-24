@@ -10,6 +10,7 @@
 
 @interface ActivityModel : NSObject
 
+@property (strong, nonatomic) NSString *activityId; //活动ID
 @property (strong ,nonatomic) NSString *imgUrl;//活动图片URL字符串
 @property (strong ,nonatomic) NSString *name;  //活动名称
 @property (strong ,nonatomic) NSString *content;//活动内容
