@@ -98,8 +98,23 @@
     }];
 }
 - (IBAction)applyAction:(UIButton *)sender forEvent:(UIEvent *)event {
+    if([Utilities loginCheck]){
+        
+    }else{
+        //获取要跳转过去的那个页面
+        UINavigationController *signNavi = [Utilities getStoryboardInstance:@"Member" byIdentity:@"SignNavi"];
+        //执行跳转
+        [self presentViewController:signNavi animated:YES completion:nil];
+    }
 }
 - (IBAction)callAction:(UIButton *)sender forEvent:(UIEvent *)event {
+    //配置“电话”App的路径,并将要拨打的号码组合到路径中
+    NSString *targetAppStr = [NSString stringWithFormat:@"%@", _activity.issurephone];
+    
+    NSURL *targetAppUrl = [NSURL URLWithString:targetAppStr];
+    //从当前App跳转到其他指定的App中
+    [[UIApplication sharedApplication] openURL:targetAppUrl];
+    
 }
 - (void)uiLayout{
     [_activityImageView sd_setImageWithURL:[NSURL URLWithString:_activity.imgUrl] placeholderImage:[UIImage imageNamed:@"png2"]];
@@ -110,5 +125,56 @@
     _addressLbl.text = _activity.address;
     [_phoneBtn setTitle:[NSString stringWithFormat:@"联系活动发布者:%@", _activity.issurephone] forState:UIControlStateNormal];
     _contentLbl.text = _activity.content;
+    NSString *dueTimeStr = [Utilities dateStrFromCstampTime:_activity.dueTime withDateFormat:@"yyyy-MM-dd HH:mm"];
+    NSString *startTimeStr = [Utilities dateStrFromCstampTime:_activity.startTime withDateFormat:@"yyyy-MM-dd HH:mm"];
+    NSString *endTimeStr = [Utilities dateStrFromCstampTime:_activity.endTime withDateFormat:@"yyyy-MM-dd HH:mm"];
+    _timeLbl.text = [NSString stringWithFormat:@"%@ ~ %@", startTimeStr, endTimeStr];
+    _applyDueLbl.text = [NSString stringWithFormat:@"报名截止时间(%@)",dueTimeStr];
+    //获取什么时候调用这方法这个时间
+    NSDate *now = [NSDate date];
+    NSTimeInterval nowTime = [now timeIntervalSince1970InMilliSecond];
+    _applyStartView.backgroundColor = [UIColor grayColor];
+    if(nowTime >= _activity.dueTime){
+        _applyDueView.backgroundColor = [UIColor grayColor];
+        _applyBtn.enabled = NO;
+        [_applyBtn setTitle:@"报名截止" forState:UIControlStateNormal];
+        if(nowTime >= _activity.startTime){
+            _applyIngView.backgroundColor = [UIColor grayColor];
+            if(nowTime >= _activity.endTime){
+                _applyEndView.backgroundColor = [UIColor grayColor];
+            }
+        }
+    }
+    if(_activity.attendence >= _activity.limitation){
+        _applyBtn.enabled = NO;
+        [_applyBtn setTitle:@"活动满员" forState:UIControlStateNormal];
+    }
+    switch (_activity.status) {
+        case 0:
+            _applyStateLbl.text = @"已取消";
+            break;
+        case 1:
+            _applyStateLbl.text = @"代付款";
+            [_applyBtn setTitle:@"去付款" forState:UIControlStateNormal];
+            break;
+        case 2:
+            _applyStateLbl.text = @"已报名";
+            [_applyBtn setTitle:@"已报名" forState:UIControlStateNormal];
+            _applyBtn.enabled = NO;
+            break;
+        case 3:
+            _applyStateLbl.text = @"退款中";
+            [_applyBtn setTitle:@"退款中" forState:UIControlStateNormal];
+            _applyBtn.enabled = NO;
+            break;
+        case 4:
+            _applyStateLbl.text = @"已退款";
+            break;
+        
+        default:{
+            _applyStateLbl.text = @"待报名";
+        }
+            break;
+    }
 }
 @end
