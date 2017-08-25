@@ -7,7 +7,7 @@
 //
 
 #import "DetailViewController.h"
-
+#import <SDWebImage/UIImageView+WebCache.h>
 @interface DetailViewController ()
 @property (weak, nonatomic) IBOutlet UIImageView *activityImageView;
 @property (weak, nonatomic) IBOutlet UILabel *applyFeeLabel;
@@ -39,6 +39,7 @@
 }
 - (void) viewWillAppear:(BOOL)animated{
     [super viewWillAppear: animated];
+    [self networkRequest];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -73,7 +74,8 @@
 }
 - (void)networkRequest{
     UIActivityIndicatorView *avi = [Utilities getCoverOnView:self.view];
-    NSString * request =[NSString stringWithFormat:@"/event/%@",_activity.activityId];
+    NSString *request =[NSString stringWithFormat:@"/event/%@",_activity.activityId];
+    NSLog(@"%@",request);
     NSMutableDictionary *parmeters = [NSMutableDictionary new];
     if([Utilities loginCheck]){
         [parmeters setObject:[[StorageMgr singletonStorageMgr] objectForKey:@"MemberId"] forKey:@"memberId"];
@@ -82,7 +84,9 @@
         NSLog(@"responseObject = %@",responseObject);
         [avi stopAnimating];
         if([responseObject[@"resultFlag"] integerValue] == 8001){
-            
+            NSDictionary *result = responseObject[@"result"];
+            _activity = [[ActivityModel alloc]initWhitDictionaryDictionary:result];
+            [self uiLayout];
         }else{
             [avi stopAnimating];
             NSString *errorMsg = [ErrorHandler getProperErrorString:[responseObject[@"resultFlag"] integerValue]];
@@ -96,5 +100,15 @@
 - (IBAction)applyAction:(UIButton *)sender forEvent:(UIEvent *)event {
 }
 - (IBAction)callAction:(UIButton *)sender forEvent:(UIEvent *)event {
+}
+- (void)uiLayout{
+    [_activityImageView sd_setImageWithURL:[NSURL URLWithString:_activity.imgUrl] placeholderImage:[UIImage imageNamed:@"png2"]];
+    _applyFeeLabel.text = [NSString stringWithFormat:@"%@元", _activity.applyFee];
+    _attentdenceLbl.text = [NSString stringWithFormat:@"%@/%@", _activity.attendence, _activity.limitation];
+    _typeLbl.text = _activity.atype;
+    _issuerLbl.text = _activity.issure;
+    _addressLbl.text = _activity.address;
+    [_phoneBtn setTitle:[NSString stringWithFormat:@"联系活动发布者:%@", _activity.issurephone] forState:UIControlStateNormal];
+    _contentLbl.text = _activity.content;
 }
 @end
