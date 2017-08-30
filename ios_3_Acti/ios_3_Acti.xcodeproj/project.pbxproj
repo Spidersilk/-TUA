@@ -565,6 +565,7 @@
 				TargetAttributes = {
 					B22C7A221F25D1CF00F37C1D = {
 						CreatedOnToolsVersion = 8.3.3;
+						DevelopmentTeam = UYWQFE4N83;
 						ProvisioningStyle = Automatic;
 					};
 					B22C7A3E1F25D1CF00F37C1D = {
@@ -903,6 +904,7 @@
 			baseConfigurationReference = 7F4B883F06526E43FA5D5B0F /* Pods-ios_3_Acti.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = UYWQFE4N83;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ios_3_Acti",
@@ -926,6 +928,7 @@
 			baseConfigurationReference = 1E92D645A74073934B36142E /* Pods-ios_3_Acti.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = UYWQFE4N83;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ios_3_Acti",
