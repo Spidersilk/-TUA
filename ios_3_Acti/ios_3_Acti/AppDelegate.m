@@ -7,12 +7,13 @@
 //
 
 #import "AppDelegate.h"
+#import "ListViewController.h"
 #import <ECSlidingViewController/ECSlidingViewController.h>//门框结构
 
 @interface AppDelegate ()<ECSlidingViewControllerDelegate>
 //初始化一个实例。获得门框
 @property (strong, nonatomic) ECSlidingViewController *slidingVC;
-
+@property(strong,nonatomic) UINavigationController *navi;
 @end
 
 @implementation AppDelegate
@@ -23,11 +24,12 @@
     
     //初始化窗口（不用故事版设置箭头的时候，系统不会默认设置窗口，需手动设置）
     _window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    UINavigationController *navi = [Utilities getStoryboardInstance:@"Main" byIdentity:@"HomeNavi"];
+    _navi = [Utilities getStoryboardInstance:@"Main" byIdentity:@"HomeNavi"];
+    
     //将窗口可视化
     [_window makeKeyAndVisible];
     //创建门框(初始化的同时顺便设置好门框最外层的那扇门。也就是用户首先会看到的正中间的页面)(1.故事版名字2.视图控制器的名字)
-    _slidingVC = [[ECSlidingViewController alloc] initWithTopViewController:navi];
+    _slidingVC = [[ECSlidingViewController alloc] initWithTopViewController:_navi];
     //签协议
     //_slidingVC.delegate = self;
     //放好左边那扇门(1.故事版名字2.视图控制器的名字)
@@ -35,7 +37,7 @@
     //设置手势（表示让中间的门能够对拖拽与触摸响应）ECSlidingViewControllerAnchoredGestureTapping(触摸),ECSlidingViewControllerAnchoredGesturePanning(拖拽)
     _slidingVC.topViewAnchoredGesture = ECSlidingViewControllerAnchoredGestureTapping | ECSlidingViewControllerAnchoredGesturePanning;
     //把上面配置好的手势添加到中间那扇门
-    [navi.view addGestureRecognizer:_slidingVC.panGesture];
+    [_navi.view addGestureRecognizer:_slidingVC.panGesture];
     //设置侧滑动画的执行时间
     _slidingVC.defaultTransitionDuration = 0.25;
     //设置滑动的幅度（中间那扇门打开的宽度）(RevealAmount后面那扇门能看到多少)
@@ -47,6 +49,8 @@
     
     //注册策划按钮被
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(leftSwitchAction:) name:@"LeftSwitch" object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(noCeHua) name:@"noCehua" object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(ceHua) name:@"cehua" object:nil];
     return YES;
 }
 //当收到通知后要执行的方法
@@ -62,8 +66,17 @@
     
     }
 }
-
-
+- (void)noCeHua {
+    //设置滑动的幅度（中间那扇门打开的宽度）(RevealAmount后面那扇门能看到多少)
+    //_slidingVC.anchorRightPeekAmount = UI_SCREEN_W;
+   [_navi.view removeGestureRecognizer:_slidingVC.panGesture];
+    //[self.slidingVC.view addGestureRecognizer:self.slidingVC.panGesture];
+}
+- (void)ceHua {
+    //设置滑动的幅度（中间那扇门打开的宽度）(RevealAmount后面那扇门能看到多少)
+    //_slidingVC.anchorRightPeekAmount = UI_SCREEN_W;
+    [_navi.view addGestureRecognizer:_slidingVC.panGesture];
+}
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.

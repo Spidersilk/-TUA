@@ -9,7 +9,8 @@
 #import "DetailViewController.h"
 #import "PurchaseTableViewController.h"
 #import <SDWebImage/UIImageView+WebCache.h>
-@interface DetailViewController ()
+#import <ECSlidingViewController/ECSlidingViewController.h>//门框结构
+@interface DetailViewController ()<ECSlidingViewControllerDelegate>
 @property (weak, nonatomic) IBOutlet UIImageView *activityImageView;
 @property (weak, nonatomic) IBOutlet UILabel *applyFeeLabel;
 - (IBAction)applyAction:(UIButton *)sender forEvent:(UIEvent *)event;

@@ -13,8 +13,9 @@
 #import "DetailViewController.h"
 #import "IssueViewController.h"
 #import <CoreLocation/CoreLocation.h>//使用该框架才可以使用定位功能
+#import <ECSlidingViewController/ECSlidingViewController.h>//门框结构
 
-@interface ListViewController ()<UITableViewDataSource ,UITableViewDelegate, CLLocationManagerDelegate> {
+@interface ListViewController ()<UITableViewDataSource ,UITableViewDelegate, CLLocationManagerDelegate,ECSlidingViewControllerDelegate> {
     NSInteger page;//页码
     NSInteger perPage;//每页多少个内容
     NSInteger totalPage;//多少页
@@ -69,6 +70,8 @@
 //每次将要来到这个页面的时候
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    //创建一个通知(打开侧滑功能)
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"cehua" object:nil];
     [self locationStart];
     
 }
@@ -81,19 +84,22 @@
 //每次将要离开这个页面的时候
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
+    //创建一个通知(关闭侧滑功能)
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"noCehua" object:nil];
     //关掉开关
     [_locMgr stopUpdatingLocation];
 }
-
 //每次离开这个页面
 - (void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
+    
     //获得当前页面的导航控制器所维系的关于导航关系的数组,判断该数组中是否包含自己来得知当前操作是离开本页面还是退出本页面
     if(![self.navigationController.viewControllers containsObject:self]){
        //在这里先释放所有监听（包括：Action事件；Protocol：协议；Gesture手势；Notification通知...）所有通过故事版添加德控件都会自动释放
         
     }
 }
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
